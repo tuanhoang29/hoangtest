@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VR360 Hotspot Coordinate Finder</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .coordinate-display {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+            font-family: monospace;
+            font-size: 14px;
+        }
+        .instructions {
+            background: #e3f2fd;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+            border-left: 4px solid #2196f3;
+        }
+        .hotspot-template {
+            background: #f3e5f5;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+            font-family: monospace;
+            white-space: pre-wrap;
+            border-left: 4px solid #9c27b0;
+        }
+        button {
+            background: #2196f3;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background: #1976d2;
+        }
+        input, textarea {
+            width: 100%;
+            padding: 8px;
+            margin: 5px 0;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>VR360 Hotspot Coordinate Finder</h1>
+
+        <div class="instructions">
+            <h3>How to Use:</h3>
+            <ol>
+                <li>Open your VR360 tour in a browser</li>
+                <li>Navigate to the scene where you want to add a hotspot</li>
+                <li>Move your mouse to the exact spot where you want the hotspot</li>
+                <li>The coordinates will be displayed below</li>
+                <li>Copy the generated hotspot code and add it to your data.js file</li>
+            </ol>
+        </div>
+
+        <div class="coordinate-display">
+            <strong>Current Coordinates:</strong><br>
+            Yaw: <span id="yaw">0.0000</span><br>
+            Pitch: <span id="pitch">0.0000</span>
+        </div>
+
+        <button onclick="copyCoordinates()">Copy Coordinates</button>
+        <button onclick="resetCoordinates()">Reset to Center</button>
+
+        <h3>Generate Hotspot Code</h3>
+        <input type="text" id="hotspotTitle" placeholder="Hotspot Title" value="New Hotspot">
+        <input type="text" id="hotspotImage" placeholder="Image path (e.g., hotspots/my-image.jpg)" value="hotspots/">
+        <textarea id="hotspotText" rows="3" placeholder="Main description text">Description of this location.</textarea>
+        <textarea id="hotspotDetails" rows="3" placeholder="Additional details">More detailed information about this location.</textarea>
+
+        <button onclick="generateHotspotCode()">Generate Hotspot Code</button>
+
+        <div class="hotspot-template" id="generatedCode">
+{
+  "yaw": 0.0000,
+  "pitch": 0.0000,
+  "title": "New Hotspot",
+  "image": "hotspots/",
+  "text": "Description of this location.",
+  "details": "More detailed information about this location."
+}
+        </div>
+
+        <button onclick="copyGeneratedCode()">Copy Generated Code</button>
+    </div>
+
+    <script>
+        // Simulate coordinate tracking (in real implementation, this would connect to Marzipano)
+        let currentYaw = 0;
+        let currentPitch = 0;
+
+        // Update coordinates based on mouse movement (simulated)
+        document.addEventListener('mousemove', function(e) {
+            // Convert mouse position to yaw/pitch coordinates
+            const rect = document.body.getBoundingClientRect();
+            const centerX = rect.width / 2;
+            const centerY = rect.height / 2;
+
+            // Yaw: -π to π (left to right)
+            currentYaw = ((e.clientX - centerX) / centerX) * Math.PI;
+            // Pitch: -π/2 to π/2 (down to up)
+            currentPitch = ((centerY - e.clientY) / centerY) * (Math.PI / 2);
+
+            updateDisplay();
+        });
+
+        function updateDisplay() {
+            document.getElementById('yaw').textContent = currentYaw.toFixed(4);
+            document.getElementById('pitch').textContent = currentPitch.toFixed(4);
+        }
+
+        function copyCoordinates() {
+            const coords = `Yaw: ${currentYaw.toFixed(4)}, Pitch: ${currentPitch.toFixed(4)}`;
+            navigator.clipboard.writeText(coords);
+            alert('Coordinates copied to clipboard!');
+        }
+
+        function resetCoordinates() {
+            currentYaw = 0;
+            currentPitch = 0;
+            updateDisplay();
+        }
+
+        function generateHotspotCode() {
+            const title = document.getElementById('hotspotTitle').value;
+            const image = document.getElementById('hotspotImage').value;
+            const text = document.getElementById('hotspotText').value;
+            const details = document.getElementById('hotspotDetails').value;
+
+            const code = `{
+  "yaw": ${currentYaw.toFixed(4)},
+  "pitch": ${currentPitch.toFixed(4)},
+  "title": "${title}",
+  "image": "${image}",
+  "text": "${text}",
+  "details": "${details}"
+}`;
+
+            document.getElementById('generatedCode').textContent = code;
+        }
+
+        function copyGeneratedCode() {
+            const code = document.getElementById('generatedCode').textContent;
+            navigator.clipboard.writeText(code);
+            alert('Hotspot code copied to clipboard!');
+        }
+
+        // Initialize
+        updateDisplay();
+    </script>
+</body>
+</html>

@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<title>Dinh thự Hoàng A Tưởng - Virtual Tour</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=0.0, minimum-scale=1.0, user-scalable=no, minimal-ui">
+<meta name="description" content="Khám phá Dinh thự Hoàng A Tưởng qua tour ảo 360 độ">
+<meta name="keywords" content="dinh thự Hoàng A Tưởng, virtual tour, 360, VR">
+<meta name="author" content="Em Hoàng">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style> @-ms-viewport { width: device-width; } </style>
+<link rel="stylesheet" href="vendor/reset.min.css">
+<link rel="stylesheet" href="style.css">
+</head>
+<body class="multiple-scenes loading">
+
+<!-- Loading Screen -->
+<div id="loading">
+  <div class="loading-content">
+    <div class="spinner"></div>
+    <h2>Đang tải...</h2>
+    <p>Khám phá Dinh thự Hoàng A Tưởng</p>
+  </div>
+</div>
+
+<!-- Main Panorama Container -->
+<div id="pano"></div>
+
+<!-- Background Music -->
+<audio id="backgroundMusic" loop preload="auto">
+  <source src="audio/temple-ambience.mp3" type="audio/mpeg">
+  <source src="audio/temple-ambience.ogg" type="audio/ogg">
+  Your browser does not support the audio element.
+</audio>
+
+<!-- Modern Navigation -->
+<nav id="mainNav">
+  <div class="nav-brand">
+    <h1>Dinh thự Hoàng A Tưởng</h1>
+    <span class="subtitle">Virtual Tour 360°</span>
+  </div>
+  
+  <div class="nav-controls">
+    <button id="sceneListToggle" class="nav-btn" aria-label="Danh sách cảnh">
+      <svg class="icon" viewBox="0 0 24 24">
+        <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
+      </svg>
+    </button>
+    
+    <button id="mapToggle" class="nav-btn" aria-label="Bản đồ">
+      <svg class="icon" viewBox="0 0 24 24">
+        <path d="M20.5 3l-.16.03L15 5.1 9 3 3.36 4.9c-.21.07-.36.25-.36.48V20.5c0 .28.22.5.5.5l.16-.03L9 18.9l6 2.1 5.64-1.9c.21-.07.36-.25.36-.48V3.5c0-.28-.22-.5-.5-.5zM15 19l-6-2.11V5l6 2.11V19z"/>
+      </svg>
+    </button>
+    
+    <button id="musicToggle" class="nav-btn music-btn" aria-label="Nhạc nền">
+      <svg class="icon off" viewBox="0 0 24 24">
+        <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/>
+      </svg>
+      <svg class="icon on" viewBox="0 0 24 24">
+        <path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v1.79c.48.19.91.53 1.21.91.49.6.79 1.38.79 2.33s-.3 1.73-.79 2.33c-.3.38-.73.72-1.21.91v1.79c1.48-.73 2.5-2.25 2.5-4.03zM19 12c0-2.76-1.45-5.19-3.64-6.63L16 6.17c1.63.98 2.64 2.72 2.64 4.83 0 2.11-1.01 3.85-2.64 4.83l-.36.47C17.55 17.19 19 14.76 19 12zM3 9v6h4l5 5V4L7 9H3z"/>
+      </svg>
+      
+      <!-- Volume Slider -->
+      <div class="volume-slider-container">
+        <input type="range" id="volumeSlider" class="volume-slider" min="0" max="1" step="0.1" value="0.3">
+        <div class="volume-level">
+          <div class="volume-fill"></div>
+        </div>
+      </div>
+    </button>
+    
+    <button id="autorotateToggle" class="nav-btn" aria-label="Tự động xoay">
+      <svg class="icon off" viewBox="0 0 24 24">
+        <path d="M8 5v14l11-7z"/>
+      </svg>
+      <svg class="icon on" viewBox="0 0 24 24">
+        <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>
+      </svg>
+    </button>
+    
+    <button id="fullscreenToggle" class="nav-btn" aria-label="Toàn màn hình">
+      <svg class="icon off" viewBox="0 0 24 24">
+        <path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/>
+      </svg>
+      <svg class="icon on" viewBox="0 0 24 24">
+        <path d="M5 16h3v3h2v-5H5v2zm3-8H5v2h5V5H8v3zm6 11h2v-3h3v-2h-5v5zm2-11V5h-2v5h5V8h-3z"/>
+      </svg>
+    </button>
+  </div>
+</nav>
+
+<!-- Scene Title -->
+<div id="sceneTitle">
+  <h2 class="scene-name"></h2>
+</div>
+
+<!-- Scene List Sidebar -->
+<div id="sceneList">
+  <div class="scene-list-header">
+    <h3>Danh sách cảnh</h3>
+    <button id="closeSceneList" class="close-btn" aria-label="Đóng">
+      <svg viewBox="0 0 24 24">
+        <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
+      </svg>
+    </button>
+  </div>
+  <ul class="scenes">
+    <li>
+      <a href="javascript:void(0)" class="scene" data-id="1-2-cha-trn-ng-nhn-t-hng-ng-nam">
+        <span class="scene-number">1</span>
+        <span class="scene-text">Toàn cảnh mặt bằng dinh thự Hoàng A Tưởng</span>
+      </a>
+    </li>
+    <li>
+      <a href="javascript:void(0)" class="scene" data-id="2-3-ta-gc-chung">
+        <span class="scene-number">2</span>
+        <span class="scene-text">Dinh thự Hoàng A Tưởng nhìn từ hướng Đông Nam</span>
+      </a>
+    </li>
+    <li>
+      <a href="javascript:void(0)" class="scene" data-id="3-4-mt-trc-ta-tin-ng">
+        <span class="scene-number">3</span>
+        <span class="scene-text">Tòa Gác chuông</span>
+      </a>
+    </li>
+    <li>
+      <a href="javascript:void(0)" class="scene" data-id="4-5-gian-gia-ta-tin-ng">
+        <span class="scene-number">4</span>
+        <span class="scene-text">Mặt trước tòa Dinh thự Hoàng A Tưởng</span>
+      </a>
+    </li>
+    <li>
+      <a href="javascript:void(0)" class="scene" data-id="5-6-gian-hi-bn-tri-ta-tin-ng">
+        <span class="scene-number">5</span>
+        <span class="scene-text">Gian giữa tòa Dinh thự Hoàng A Tưởng</span>
+      </a>
+    </li>
+    <li>
+      <a href="javascript:void(0)" class="scene" data-id="6-7-gian-hi-bn-phi-ta-tin-ng">
+        <span class="scene-number">6</span>
+        <span class="scene-text">Gian hồi bên trái tòa Dinh thự Hoàng A Tưởng</span>
+      </a>
+    </li>
+    <li>
+      <a href="javascript:void(0)" class="scene" data-id="7-8-gian-trc-ta-thiu-hng">
+        <span class="scene-number">7</span>
+        <span class="scene-text">Gian hồi bên phải tòa Dinh thự Hoàng A Tưởng</span>
+      </a>
+    </li>
+    <li>
+      <a href="javascript:void(0)" class="scene" data-id="8-9-gian-gia-ta-thiu-hng">
+        <span class="scene-number">8</span>
+        <span class="scene-text">Gian trước tòa Dinh thự Hoàng A Tưởng</span>
+      </a>
+    </li>
+    <li>
+      <a href="javascript:void(0)" class="scene" data-id="9-10-gian-hi-bn-tri-ta-thng-in">
+        <span class="scene-number">9</span>
+        <span class="scene-text">Gian giữa tòa Dinh thự Hoàng A Tưởngg</span>
+      </a>
+    </li>
+    <li>
+      <a href="javascript:void(0)" class="scene" data-id="10-11-gian-hi-bn-phi-ta-thng-in">
+        <span class="scene-number">10</span>
+        <span class="scene-text">Gian hồi bên trái tòa Dinh thự Hoàng A Tưởng</span>
+      </a>
+    </li>
+    <li>
+      <a href="javascript:void(0)" class="scene" data-id="11- 12-gian-h-i-bn-ph-i-ta-dinh-th--ho-ng-a-tng">
+        <span class="scene-number">11</span>
+        <span class="scene-text">Gian hồi bên phải tòa Dinh thự Hoàng A Tưởng</span>
+      </a>
+    </li>
+  </ul>
+</div>
+
+<!-- Map Sidebar -->
+<div id="mapSidebar">
+  <div class="map-header">
+    <h3>Vị trí trên bản đồ</h3>
+    <button id="closeMap" class="close-btn" aria-label="Đóng">
+      <svg viewBox="0 0 24 24">
+        <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
+      </svg>
+    </button>
+  </div>
+  <div class="map-container">
+    <iframe 
+      src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3685.015003045102!2d104.29288797602682!3d22.54111073412225!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x36cce2add7645121%3A0xecfcb3aa8020688c!2zRGluaCB0aOG7sSBIb8OgbmcgQSBUxrDhu59uZw!5e0!3m2!1svi!2s!4v1767745314241!5m2!1svi!2s" 
+      width="100%" 
+      height="400" 
+      style="border:0;" 
+      allowfullscreen="" 
+      loading="lazy" 
+      referrerpolicy="no-referrer-when-downgrade">
+    </iframe>
+    <div class="map-info">
+      <h4>Dinh thự Hoàng A Tưởng</h4>
+      <p>📍 Địa chỉ: 257 Ngọc Uyển, TT. Bắc Hà, Bắc Hà, Lào Cai 31300</p>
+      <p>🕐 Giờ mở cửa: 8:00-17:00</p>
+      <p>💰 Vé vào: Liên hệ</p>
+      <a href="https://www.google.com/maps/dir/?api=1&destination=22.54111073412225,104.29288797602682&destination_place_id=0x36cce2add7645121:0xecfcb3aa8020688c" target="_blank" class="directions-btn">
+        📍 Chỉ đường đến đây
+      </a>
+    </div>
+  </div>
+</div>
+
+<!-- View Controls -->
+<div id="viewControls">
+  <button id="viewUp" class="view-btn" aria-label="Lên">
+    <svg viewBox="0 0 24 24">
+      <path d="M7 14l5-5 5 5z"/>
+    </svg>
+  </button>
+  <button id="viewDown" class="view-btn" aria-label="Xuống">
+    <svg viewBox="0 0 24 24">
+      <path d="M7 10l5 5 5-5z"/>
+    </svg>
+  </button>
+  <button id="viewLeft" class="view-btn" aria-label="Trái">
+    <svg viewBox="0 0 24 24">
+      <path d="M14 7l-5 5 5 5z"/>
+    </svg>
+  </button>
+  <button id="viewRight" class="view-btn" aria-label="Phải">
+    <svg viewBox="0 0 24 24">
+      <path d="M10 7l5 5-5 5z"/>
+    </svg>
+  </button>
+  <button id="viewIn" class="view-btn" aria-label="Phóng to">
+    <svg viewBox="0 0 24 24">
+      <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
+    </svg>
+  </button>
+  <button id="viewOut" class="view-btn" aria-label="Thu nhỏ">
+    <svg viewBox="0 0 24 24">
+      <path d="M19 13H5v-2h14v2z"/>
+    </svg>
+  </button>
+</div>
+
+<script src="vendor/screenfull.min.js"></script>
+<script src="vendor/bowser.min.js"></script>
+<script src="vendor/marzipano.js"></script>
+<script src="data.js"></script>
+<script src="index.js"></script>
+
+<!-- Coordinate tracking for live editor -->
+<script>
+(function() {
+    // Check if we're in an iframe (live editor)
+    const inIframe = window.parent !== window;
+    console.log('📍 Coordinate tracking script loaded. In iframe:', inIframe);
+    
+    if (!inIframe) return; // Only run in iframe
+    
+    console.log('🎯 VR Tour loaded in iframe, enabling coordinate tracking...');
+
+    // Function to send coordinates to parent
+    function sendCoordinates(yaw, pitch, fov) {
+        window.parent.postMessage({
+            type: 'coordinates',
+            yaw: yaw,
+            pitch: pitch,
+            fov: fov
+        }, '*');
+    }
+
+    // Function to send click coordinates
+    function sendCoordinateLock(yaw, pitch) {
+        console.log('📤 Sending coordinate lock to parent:', yaw, pitch);
+        window.parent.postMessage({
+            type: 'coordinateLock',
+            yaw: yaw,
+            pitch: pitch
+        }, '*');
+    }
+
+    // Function to send right-click coordinates
+    function sendRightClick(yaw, pitch, mouseX, mouseY) {
+        console.log('📤 Sending right-click to parent:', yaw, pitch, 'Mouse:', mouseX, mouseY);
+        window.parent.postMessage({
+            type: 'rightClick',
+            yaw: yaw,
+            pitch: pitch,
+            mouseX: mouseX,
+            mouseY: mouseY
+        }, '*');
+    }
+
+    // Wait for viewer to be ready with better checking
+    let attempts = 0;
+    const maxAttempts = 40; // 20 seconds with 500ms intervals
+    
+    function waitForViewer() {
+        attempts++;
+        console.log(`⏳ Checking for viewer... (attempt ${attempts}/${maxAttempts})`);
+        
+        if (window.viewer && window.viewer.view && typeof window.viewer.view === 'function') {
+            console.log('✅ Viewer found! Starting coordinate tracking...');
+
+            // Get the panorama element for click detection
+            const panoElement = document.querySelector('#pano');
+            if (!panoElement) {
+                console.warn('⚠️ Could not find #pano element');
+            }
+
+            // Track coordinates on mouse move
+            let lastYaw = 0, lastPitch = 0, lastFov = 0;
+            let trackCount = 0;
+            
+            function trackCoordinates() {
+                try {
+                    if (window.viewer && window.viewer.view) {
+                        const view = window.viewer.view();
+                        const yaw = view.yaw();
+                        const pitch = view.pitch();
+                        const fov = view.fov();
+
+                        if (yaw !== lastYaw || pitch !== lastPitch || fov !== lastFov) {
+                            lastYaw = yaw;
+                            lastPitch = pitch;
+                            lastFov = fov;
+                            sendCoordinates(yaw, pitch, fov);
+                            trackCount++;
+                            if (trackCount % 10 === 0) {
+                                console.log(`📍 Tracking... (${trackCount} updates sent)`);
+                            }
+                        }
+                    }
+                } catch (e) {
+                    console.error('Error in trackCoordinates:', e);
+                }
+            }
+
+            // Start tracking immediately
+            const trackInterval = setInterval(trackCoordinates, 100);
+            console.log('▶️ Coordinate tracking interval started');
+
+            // Track on mouse move for responsiveness
+            document.addEventListener('mousemove', trackCoordinates);
+            console.log('▶️ Mouse move listener added');
+
+            // Handle clicks for coordinate locking
+            document.addEventListener('click', function(e) {
+                try {
+                    if (window.viewer && window.viewer.view) {
+                        const view = window.viewer.view();
+                        const yaw = view.yaw();
+                        const pitch = view.pitch();
+                        console.log('🔒 Click detected at:', yaw, pitch);
+                        sendCoordinateLock(yaw, pitch);
+                    }
+                } catch (e) {
+                    console.error('Error in click handler:', e);
+                }
+            });
+            console.log('▶️ Click listener added');
+
+            // Handle right-clicks for context menu
+            document.addEventListener('contextmenu', function(e) {
+                e.preventDefault(); // Prevent default browser context menu
+                try {
+                    if (window.viewer && window.viewer.view) {
+                        const view = window.viewer.view();
+                        const yaw = view.yaw();
+                        const pitch = view.pitch();
+                        console.log('🎯 Right-click detected at:', yaw, pitch, 'Mouse:', e.clientX, e.clientY);
+                        sendRightClick(yaw, pitch, e.clientX, e.clientY);
+                    }
+                } catch (e) {
+                    console.error('Error in right-click handler:', e);
+                }
+            });
+            console.log('▶️ Right-click listener added');
+            
+            console.log('🎯 Coordinate tracking fully active');
+            return true;
+        } else {
+            if (attempts < maxAttempts) {
+                setTimeout(waitForViewer, 500);
+            } else {
+                console.error('❌ Viewer not found after 20 seconds');
+            }
+        }
+    }
+
+    // Start waiting for viewer - give page time to load
+    setTimeout(waitForViewer, 500);
+})();
+</script>
+
+</body>
+</html>

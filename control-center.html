@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VR360 Temple Tour - Control Center</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            color: white;
+            padding: 30px;
+            text-align: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 2.5em;
+            background: linear-gradient(45deg, #ffffff, #e0e7ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header p {
+            margin: 10px 0 0 0;
+            opacity: 0.9;
+            font-size: 1.1em;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .tool-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .tool-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            text-align: center;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .tool-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        .tool-icon {
+            font-size: 3em;
+            margin-bottom: 20px;
+            display: block;
+        }
+
+        .tool-title {
+            font-size: 1.5em;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        .tool-description {
+            color: #666;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+
+        .tool-button {
+            display: inline-block;
+            padding: 12px 25px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            text-decoration: none;
+            border-radius: 25px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .tool-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .tool-button.secondary {
+            background: linear-gradient(45deg, #48bb78, #38a169);
+        }
+
+        .tool-button.secondary:hover {
+            box-shadow: 0 5px 15px rgba(72, 187, 120, 0.4);
+        }
+
+        .status-section {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 30px;
+        }
+
+        .status-title {
+            font-size: 1.3em;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        .status-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .status-item:last-child {
+            border-bottom: none;
+        }
+
+        .status-label {
+            font-weight: 500;
+            color: #555;
+        }
+
+        .status-value {
+            font-weight: 600;
+            color: #333;
+        }
+
+        .status-value.ready {
+            color: #48bb78;
+        }
+
+        .quick-actions {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .footer {
+            text-align: center;
+            color: rgba(255, 255, 255, 0.8);
+            padding: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            margin-top: 40px;
+        }
+
+        @media (max-width: 768px) {
+            .tool-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .header h1 {
+                font-size: 2em;
+            }
+
+            .quick-actions {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🏛️ VR360 Temple Tour</h1>
+        <p>Control Center - Easy hotspot management for Chùa Trần Đăng</p>
+    </div>
+
+    <div class="container">
+        <!-- Status Overview -->
+        <div class="status-section">
+            <div class="status-title">📊 Project Status</div>
+            <div class="status-item">
+                <span class="status-label">VR360 Tour</span>
+                <span class="status-value ready">✅ Ready</span>
+            </div>
+            <div class="status-item">
+                <span class="status-label">Hotspot System</span>
+                <span class="status-value ready">✅ Active</span>
+            </div>
+            <div class="status-item">
+                <span class="status-label">Scenes Available</span>
+                <span class="status-value">11 Scenes</span>
+            </div>
+            <div class="status-item">
+                <span class="status-label">Hotspot Tools</span>
+                <span class="status-value ready">✅ Ready</span>
+            </div>
+        </div>
+
+        <!-- Main Tools -->
+        <div class="tool-grid">
+            <div class="tool-card">
+                <div class="tool-icon">🎯</div>
+                <div class="tool-title">Live Editor</div>
+                <div class="tool-description">
+                    Edit your VR tour in real-time! Add, modify, and delete hotspots
+                    instantly with live preview. No coding required.
+                </div>
+                <a href="live-editor.html" class="tool-button">Open Live Editor</a>
+            </div>
+
+            <div class="tool-card">
+                <div class="tool-icon">📝</div>
+                <div class="tool-title">Hotspot Editor</div>
+                <div class="tool-description">
+                    Create hotspots easily with a user-friendly form. Generate
+                    ready-to-use JSON code for your data.js file.
+                </div>
+                <a href="hotspot-editor.html" class="tool-button">Open Editor</a>
+            </div>
+
+            <div class="tool-card">
+                <div class="tool-icon">📍</div>
+                <div class="tool-title">Coordinate Finder</div>
+                <div class="tool-description">
+                    Find exact coordinates for hotspot placement. Interactive tool that
+                    works directly with your VR360 tour.
+                </div>
+                <a href="coordinate-finder.html" class="tool-button">Find Coordinates</a>
+            </div>
+
+            <div class="tool-card">
+                <div class="tool-icon">🏛️</div>
+                <div class="tool-title">VR360 Tour</div>
+                <div class="tool-description">
+                    View your interactive temple tour. Navigate between scenes and
+                    test your hotspots in the actual experience.
+                </div>
+                <a href="index.html" class="tool-button secondary">Open Tour</a>
+            </div>
+
+            <div class="tool-card">
+                <div class="tool-icon">📖</div>
+                <div class="tool-title">Documentation</div>
+                <div class="tool-description">
+                    Complete guide with step-by-step instructions, troubleshooting tips,
+                    and advanced configuration options.
+                </div>
+                <a href="HOTSPOT_GUIDE.md" class="tool-button">View Guide</a>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="status-section">
+            <div class="status-title">⚡ Quick Actions</div>
+            <div class="quick-actions">
+                <button class="tool-button" onclick="openAllTools()">Open All Tools</button>
+                <button class="tool-button secondary" onclick="checkHotspots()">Check Current Hotspots</button>
+                <a href="data.js" class="tool-button" style="background: linear-gradient(45deg, #ed8936, #dd6b20);">Edit Data File</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>Chùa Trần Đăng VR360 Tour - Interactive Temple Experience</p>
+        <p>Built with Marzipano.js | Modern Web Technologies</p>
+    </div>
+
+    <script>
+        function openAllTools() {
+            // Open tools in new tabs
+            window.open('hotspot-editor.html', '_blank');
+            window.open('coordinate-finder.html', '_blank');
+            window.open('index.html', '_blank');
+            window.open('HOTSPOT_GUIDE.md', '_blank');
+        }
+
+        function checkHotspots() {
+            // Simple check - could be enhanced to read data.js
+            alert('Current hotspots:\n\nScene 2: Cổng Tam Quan, Lối vào\n\nTo add more, use the Hotspot Editor!');
+        }
+
+        // Add some interactive effects
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add click effects to cards
+            const cards = document.querySelectorAll('.tool-card');
+            cards.forEach(card => {
+                card.addEventListener('click', function(e) {
+                    if (e.target.tagName !== 'A' && e.target.tagName !== 'BUTTON') {
+                        const link = card.querySelector('a');
+                        if (link) {
+                            link.click();
+                        }
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

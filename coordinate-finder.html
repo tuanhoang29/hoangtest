@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VR360 Coordinate Finder</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .instructions {
+            background: #e3f2fd;
+            padding: 20px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            border-left: 4px solid #2196f3;
+        }
+        .code-block {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 20px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            overflow-x: auto;
+        }
+        .copy-btn {
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        .copy-btn:hover {
+            background: #218838;
+        }
+        .steps {
+            counter-reset: step-counter;
+        }
+        .step {
+            counter-increment: step-counter;
+            margin-bottom: 15px;
+            padding-left: 30px;
+            position: relative;
+        }
+        .step::before {
+            content: counter(step-counter);
+            position: absolute;
+            left: 0;
+            top: 0;
+            background: #2196f3;
+            color: white;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        .highlight {
+            background: #fff3cd;
+            padding: 2px 4px;
+            border-radius: 3px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎯 VR360 Coordinate Finder</h1>
+
+        <div class="instructions">
+            <h3>📍 How to Find Hotspot Coordinates:</h3>
+            <div class="steps">
+                <div class="step">Open your VR360 tour in a web browser (<span class="highlight">index.html</span>)</div>
+                <div class="step">Navigate to the scene where you want to add a hotspot</div>
+                <div class="step">Press <span class="highlight">F12</span> or right-click and select "Inspect" to open Developer Tools</div>
+                <div class="step">Go to the <span class="highlight">Console</span> tab</div>
+                <div class="step">Copy and paste the code below into the console, then press Enter</div>
+                <div class="step">Move your mouse around the VR scene - coordinates will appear in the console</div>
+                <div class="step">Click where you want the hotspot when you find the perfect position</div>
+                <div class="step">Copy the yaw and pitch values from the console output</div>
+            </div>
+        </div>
+
+        <h3>📋 Console Code to Copy:</h3>
+        <div class="code-block" id="consoleCode">
+// VR360 Coordinate Finder - Paste this into browser console (F12)
+(function() {
+    console.log('🎯 VR360 Coordinate Finder Active!');
+    console.log('Move your mouse around the VR scene to see coordinates...');
+
+    let lastYaw = 0, lastPitch = 0;
+
+    // Override Marzipano's mouse handlers to capture coordinates
+    const originalMouseMove = document.onmousemove;
+    document.addEventListener('mousemove', function(e) {
+        // Try to get coordinates from Marzipano viewer
+        if (window.viewer) {
+            try {
+                const view = window.viewer.view();
+                const yaw = view.yaw();
+                const pitch = view.pitch();
+
+                if (yaw !== lastYaw || pitch !== lastPitch) {
+                    lastYaw = yaw;
+                    lastPitch = pitch;
+                    console.log(`📍 Coordinates: Yaw: ${yaw.toFixed(4)}, Pitch: ${pitch.toFixed(4)}`);
+                }
+            } catch (err) {
+                console.log('Waiting for VR scene to load...');
+            }
+        }
+    });
+
+    // Click to lock coordinates
+    document.addEventListener('click', function(e) {
+        if (window.viewer) {
+            try {
+                const view = window.viewer.view();
+                const yaw = view.yaw();
+                const pitch = view.pitch();
+                console.log('🎯 FINAL COORDINATES:');
+                console.log(`Yaw: ${yaw.toFixed(4)}`);
+                console.log(`Pitch: ${pitch.toFixed(4)}`);
+                console.log('Copy these values to use in your hotspot!');
+            } catch (err) {}
+        }
+    });
+
+    console.log('✅ Click anywhere in the VR scene to lock coordinates');
+    console.log('❌ Refresh page to stop coordinate tracking');
+})();
+        </div>
+
+        <button class="copy-btn" onclick="copyConsoleCode()">📋 Copy Console Code</button>
+
+        <h3>💡 Pro Tips:</h3>
+        <ul>
+            <li><strong>Yaw range:</strong> -3.14 (far left) to +3.14 (far right)</li>
+            <li><strong>Pitch range:</strong> -1.57 (straight down) to +1.57 (straight up)</li>
+            <li><strong>Center:</strong> Yaw: 0, Pitch: 0</li>
+            <li><strong>Test coordinates:</strong> Use the Hotspot Editor to preview before adding to data.js</li>
+            <li><strong>Multiple attempts:</strong> Take several readings and average them for precision</li>
+        </ul>
+
+        <div style="margin-top: 30px; padding: 20px; background: #f8f9fa; border-radius: 5px;">
+            <h4>🔗 Quick Links:</h4>
+            <p>
+                <a href="hotspot-editor.html" style="color: #007bff; text-decoration: none;">🎯 Open Hotspot Editor</a> |
+                <a href="index.html" style="color: #007bff; text-decoration: none;">🏛️ Open VR360 Tour</a> |
+                <a href="HOTSPOT_GUIDE.md" style="color: #007bff; text-decoration: none;">📖 View Guide</a>
+            </p>
+        </div>
+    </div>
+
+    <script>
+        function copyConsoleCode() {
+            const code = document.getElementById('consoleCode').textContent;
+            navigator.clipboard.writeText(code).then(() => {
+                const btn = document.querySelector('.copy-btn');
+                const originalText = btn.textContent;
+                btn.textContent = '✅ Copied!';
+                setTimeout(() => {
+                    btn.textContent = originalText;
+                }, 2000);
+            });
+        }
+    </script>
+</body>
+</html>
